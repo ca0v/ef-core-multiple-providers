@@ -57,4 +57,12 @@ Suppose you make changes to the SqLite database and you want to apply those chan
   > dotnet ef dbcontext scaffold -p ./BoxedSoftware "Data Source=vehicles.db" Microsoft.EntityFrameworkCore.Sqlite -n BoxedSoftware.Models -o ../BoxedSoftware.Models/Models -c VehiclesContext -f
   ```
 
-Now re-generate the migrations for both providers as you did before.
+Now generate the new migration for both providers as you did before:
+
+- ```console
+  > dotnet ef migrations add DemoMigration2 --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Sqlite -- --provider Sqlite
+
+  > dotnet ef migrations add DemoMigration2 --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Postgres -- --provider Postgres
+  ```
+
+Note that there was a slight change when I did this with the sample data. The Vehicle model changed from an int to a long.

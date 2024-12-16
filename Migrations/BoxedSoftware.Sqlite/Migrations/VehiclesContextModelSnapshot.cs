@@ -18,7 +18,7 @@ namespace BoxedSoftware.Sqlite.Migrations
 
             modelBuilder.Entity("BoxedSoftware.Models.Vehicle", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
