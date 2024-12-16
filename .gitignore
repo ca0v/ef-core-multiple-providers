@@ -5,6 +5,7 @@
 
 # Solution-specific files
 *.db
+*.db-*
 .idea
 
 # User-specific files
@@ -479,3 +480,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+Migrations
+

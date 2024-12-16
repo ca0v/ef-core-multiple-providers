@@ -14,7 +14,7 @@ namespace BoxedSoftware.Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.0-preview.6.22329.4");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
 
             modelBuilder.Entity("BoxedSoftware.Models.Vehicle", b =>
                 {
@@ -40,7 +40,7 @@ namespace BoxedSoftware.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 #pragma warning restore 612, 618
         }
