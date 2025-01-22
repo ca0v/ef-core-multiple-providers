@@ -18,18 +18,15 @@ builder.Services.AddDbContext<VehiclesContext>(options =>
 {
     var provider = config.GetValue("provider", Sqlite.Name);
 
-    if (provider == Sqlite.Name)
-    {
-        options.UseSqlite(
-            config.GetConnectionString(Sqlite.Name)!,
-            x => x.MigrationsAssembly(Sqlite.Assembly)
-        );
-    }
-
     if (provider == Postgres.Name) {
         options.UseNpgsql(
             config.GetConnectionString(Postgres.Name)!,
             x => x.MigrationsAssembly(Postgres.Assembly)
+        );
+    } else {
+        options.UseSqlite(
+            config.GetConnectionString(Sqlite.Name)!,
+            x => x.MigrationsAssembly(Sqlite.Assembly)
         );
     }
 });
@@ -39,38 +36,42 @@ builder.Services.AddDbContext<VehiclesContext>(options =>
 
 Commands are assumed to be running at the root of the solution directory, and you will need to adjust your paths depending on your solution and projects.
 
+Be sure to update the connection strings in [app settings](./BoxedSoftware/appsettings.json) before running any commands.
+
+### Generate Migrations
+
+For projects already defined, you only need to generate the initial migration:
+
+`dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Sqlite -- --provider Sqlite`
+
+`dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Postgres -- --provider Postgres`
+
 ### Create BoxedSoftware.AzureSql Project
 
-To create a new class library project in a subfolder, you can use the `dotnet new classlib` command followed by the `-o` option to specify the output directory. For example:
+When adding support for a new database platform, you can use the `dotnet` CLI to create a new class library for migrations:
 
-```console
-> dotnet new classlib -n BoxedSoftware.AzureSql -o ./Migrations/BoxedSoftware.AzureSql
-> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj reference BoxedSoftware.Models/BoxedSoftware.Models.csproj
-> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Design
-> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Relational
-> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.SqlServer
-```
 
-Now tell the main project about this new project
+`dotnet new classlib -n BoxedSoftware.AzureSql -o ./Migrations/BoxedSoftware.AzureSql`
 
-```console
-> dotnet add ./BoxedSoftware/BoxedSoftware.csproj reference Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj
-> dotnet add ./BoxedSoftware/BoxedSoftware.csproj package Microsoft.EntityFrameworkCore.SqlServer
-```
+`dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj reference BoxedSoftware.Models/BoxedSoftware.Models.csproj`
 
-Finally, add the migration to the new project
+`dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Design`
 
-```console
-> dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.AzureSql -- --provider AzureSql
-```
+`dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Relational`
 
-Similarly for other providers...
 
-```console
-> dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Sqlite -- --provider Sqlite
+`dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.SqlServer`
 
-> dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Postgres -- --provider Postgres
-```
+
+Now tell the main project about this new migration project as well as its dependencies:
+
+`dotnet add ./BoxedSoftware/BoxedSoftware.csproj reference Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj`
+
+`dotnet add ./BoxedSoftware/BoxedSoftware.csproj package Microsoft.EntityFrameworkCore.SqlServer`
+
+Finally, add the initial migration to the new project:
+
+`dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.AzureSql -- --provider AzureSql`
 
 ## Dependencies
 
