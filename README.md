@@ -51,28 +51,20 @@ To create a new class library project in a subfolder, you can use the `dotnet ne
 > dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.SqlServer
 ```
 
-Note that if you want to install 8.* versions of these packages, do it like this:
-
- > dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Design --version 8.0.0
-
-To query available packages:
-
- > dotnet list package --outdated
-
-
-
 Now tell the main project about this new project
 
 ```console
 > dotnet add ./BoxedSoftware/BoxedSoftware.csproj reference Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj
-> dotnet add ./BoxedSoftware/BoxedSoftware.csproj package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
+> dotnet add ./BoxedSoftware/BoxedSoftware.csproj package Microsoft.EntityFrameworkCore.SqlServer
 ```
 
 Finally, add the migration to the new project
 
 ```console
-> dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.AzureSql -- --provider SqlServer
+> dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.AzureSql -- --provider AzureSql
 ```
+
+Similarly for other providers...
 
 ```console
 > dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Sqlite -- --provider Sqlite

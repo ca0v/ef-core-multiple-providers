@@ -17,18 +17,33 @@ builder.Services.AddDbContext<VehiclesContext>(options =>
         );
     }
 
-    if (provider == Postgres.Name) {
+    else if (provider == AzureSql.Name)
+    {
+        options.UseAzureSql(
+            config.GetConnectionString(AzureSql.Name)!,
+            x => x.MigrationsAssembly(AzureSql.Assembly)
+        );
+    }
+
+    else if (provider == Postgres.Name)
+    {
         options.UseNpgsql(
             config.GetConnectionString(Postgres.Name)!,
             x => x.MigrationsAssembly(Postgres.Assembly)
         );
+    }
+
+    else
+    {
+        throw new NotSupportedException($"Provider {provider} is not supported");
     }
 });
 
 var app = builder.Build();
 
 // initialize database
-using (var scope = app.Services.CreateScope()) {
+using (var scope = app.Services.CreateScope())
+{
     var db = scope.ServiceProvider.GetRequiredService<VehiclesContext>();
     await VehiclesContext.InitializeAsync(db);
 }
@@ -36,7 +51,7 @@ using (var scope = app.Services.CreateScope()) {
 // please don't do this, proof of concept
 // the VehiclesContext will be tied to the Provider
 // passed in at the start of the application lifetime
-app.MapGet("/", (VehiclesContext db) => 
+app.MapGet("/", (VehiclesContext db) =>
     db.Vehicles.OrderBy(x => x.Id).Take(10).ToList()
 );
 

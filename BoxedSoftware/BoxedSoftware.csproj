@@ -22,6 +22,7 @@
     <ProjectReference Include="..\BoxedSoftware.Models\BoxedSoftware.Models.csproj" />
     <ProjectReference Include="..\Migrations\BoxedSoftware.Postgres\BoxedSoftware.Postgres.csproj" />
     <ProjectReference Include="..\Migrations\BoxedSoftware.Sqlite\BoxedSoftware.Sqlite.csproj" />
+    <ProjectReference Include="..\Migrations\BoxedSoftware.AzureSql\BoxedSoftware.AzureSql.csproj" />
   </ItemGroup>
 
 </Project>
