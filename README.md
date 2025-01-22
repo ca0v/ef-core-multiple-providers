@@ -39,6 +39,41 @@ builder.Services.AddDbContext<VehiclesContext>(options =>
 
 Commands are assumed to be running at the root of the solution directory, and you will need to adjust your paths depending on your solution and projects.
 
+### Create BoxedSoftware.AzureSql Project
+
+To create a new class library project in a subfolder, you can use the `dotnet new classlib` command followed by the `-o` option to specify the output directory. For example:
+
+```console
+> dotnet new classlib -n BoxedSoftware.AzureSql -o ./Migrations/BoxedSoftware.AzureSql
+> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj reference BoxedSoftware.Models/BoxedSoftware.Models.csproj
+> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Design
+> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Relational
+> dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.SqlServer
+```
+
+Note that if you want to install 8.* versions of these packages, do it like this:
+
+ > dotnet add ./Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj package Microsoft.EntityFrameworkCore.Design --version 8.0.0
+
+To query available packages:
+
+ > dotnet list package --outdated
+
+
+
+Now tell the main project about this new project
+
+```console
+> dotnet add ./BoxedSoftware/BoxedSoftware.csproj reference Migrations/BoxedSoftware.AzureSql/BoxedSoftware.AzureSql.csproj
+> dotnet add ./BoxedSoftware/BoxedSoftware.csproj package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
+```
+
+Finally, add the migration to the new project
+
+```console
+> dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.AzureSql -- --provider SqlServer
+```
+
 ```console
 > dotnet ef migrations add DemoMigration --startup-project ./BoxedSoftware --project ./Migrations/BoxedSoftware.Sqlite -- --provider Sqlite
 
